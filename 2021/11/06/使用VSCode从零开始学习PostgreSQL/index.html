@@ -20,17 +20,26 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="个人技术总结">
-<meta property="og:type" content="website">
-<meta property="og:title" content="熹微橙光">
-<meta property="og:url" content="http://example.com/archives/index.html">
+  <meta name="description" content="总结本文讲述了Ubuntu20.04如何使用VSCode中的PostgreSQL插件以及PostgreSQL Tutorial（需要fanqiang）提供的配套数据库文件学习PostgreSQL的基本操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用VSCode从零开始学习PostgreSQL">
+<meta property="og:url" content="http://example.com/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/index.html">
 <meta property="og:site_name" content="熹微橙光">
-<meta property="og:description" content="个人技术总结">
+<meta property="og:description" content="总结本文讲述了Ubuntu20.04如何使用VSCode中的PostgreSQL插件以及PostgreSQL Tutorial（需要fanqiang）提供的配套数据库文件学习PostgreSQL的基本操作">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/dvd-rental-sample-database-diagram.png">
+<meta property="og:image" content="http://example.com/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/image-20211102092212329.png">
+<meta property="og:image" content="http://example.com/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/image-20211102092504660.png">
+<meta property="og:image" content="http://example.com/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/image-20211102092613495.png">
+<meta property="og:image" content="http://example.com/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/image-20211102093141244.png">
+<meta property="article:published_time" content="2021-11-06T07:42:21.000Z">
+<meta property="article:modified_time" content="2021-11-06T07:55:54.034Z">
 <meta property="article:author" content="freedomhust">
+<meta property="article:tag" content="PostgreSQL">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/dvd-rental-sample-database-diagram.png">
 
-<link rel="canonical" href="http://example.com/archives/">
+<link rel="canonical" href="http://example.com/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/">
 
 
 <script id="page-configurations">
@@ -38,12 +47,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>归档 | 熹微橙光</title>
+  <title>使用VSCode从零开始学习PostgreSQL | 熹微橙光</title>
   
 
 
@@ -150,70 +159,123 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <span class="collection-header">嗯..! 目前共计 2 篇日志。 继续努力。</span>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/freedomhust.jpg">
+      <meta itemprop="name" content="freedomhust">
+      <meta itemprop="description" content="个人技术总结">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="熹微橙光">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用VSCode从零开始学习PostgreSQL
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-11-06 15:42:21 / 修改时间：15:55:54" itemprop="dateCreated datePublished" datetime="2021-11-06T15:42:21+08:00">2021-11-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PostgreSQL/" itemprop="url" rel="index"><span itemprop="name">PostgreSQL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
-    </div>
+        <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文讲述了Ubuntu20.04如何使用<strong>VSCode中的PostgreSQL插件</strong>以及<a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/">PostgreSQL Tutorial</a>（需要fanqiang）提供的配套数据库文件学习PostgreSQL的基本操作</p>
+<span id="more"></span>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+<h2 id="加载PostgreSQL数据库"><a href="#加载PostgreSQL数据库" class="headerlink" title="加载PostgreSQL数据库"></a>加载PostgreSQL数据库</h2><p><a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/">PostgreSQL Tutorial</a>提供了完整的数据库文件，名为dvdrental（DVD租赁）。包含15张表，1个触发器，7个视图，8个存储过程函数，1个域和13个序列，<strong>强烈建议自己fanqiang后跟着网站的步骤去学</strong>，所以这里并不会提供压缩包的下载，下载链接在这个网页<a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/postgresql-sample-database/">PostgreSQL Sample Database</a>，如何加载数据库在这里<a target="_blank" rel="noopener" href="https://www.postgresqltutorial.com/load-postgresql-sample-database/">Load PostgreSQL Sample Database</a>，<strong>默认用户为postgres</strong>，若用户名不是postgres，需要自己创建一个名为postgres的用户，授予该用户相应的权限后继续网页中的步骤。</p>
+<p>参考SQL命令：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> database dvdrental;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> postgres <span class="keyword">WITH</span> PASSWORD <span class="string">&#x27;&lt;your password&gt;&#x27;</span>;</span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> PRIVILEGES <span class="keyword">ON</span> DATABASE dvdrental <span class="keyword">TO</span> postgres;</span><br></pre></td></tr></table></figure>
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-11-06T15:42:21+08:00"
-              content="2021-11-06">
-          11-06
-        </time>
-      </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/" itemprop="url">
-            <span itemprop="name">使用VSCode从零开始学习PostgreSQL</span>
-          </a>
-      </div>
 
-    </header>
-  </article>
+<img src="/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/dvd-rental-sample-database-diagram.png" class="" title="PostgreSQL Sample Database Diagram">
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-11-06T15:36:02+08:00"
-              content="2021-11-06">
-          11-06
-        </time>
-      </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/06/VSCode%E8%B0%83%E8%AF%95PostgreSQL%E6%BA%90%E7%A0%81/" itemprop="url">
-            <span itemprop="name">VSCode调试PostgreSQL源码</span>
-          </a>
-      </div>
 
-    </header>
-  </article>
+
+
+
+<h2 id="使用VSCode-PostgreSQL插件"><a href="#使用VSCode-PostgreSQL插件" class="headerlink" title="使用VSCode PostgreSQL插件"></a>使用VSCode PostgreSQL插件</h2><ol>
+<li>在VSCode的Extensions中搜索安装PostgreSQL，第一个就是</li>
+</ol>
+<img src="/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/image-20211102092212329.png" class="" title="image-20211102092212329">
+
+<ol start="2">
+<li>安装好后点击左边出现的PostgreSQL的图标，选择“+”添加新的数据库连接，跟着操作步骤来很快的，选择你登录的用户，如果想要修改的话，<strong>可以在添加完成后右键Edit Connection编辑自己的配置</strong>，database若不填则默认会显示你创建的所有数据库</li>
+</ol>
+<img src="/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/image-20211102092504660.png" class="" title="image-20211102092504660">
+
+<img src="/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/image-20211102092613495.png" class="" title="image-20211102092613495">
+
+<ol start="3">
+<li>连接好之后，选择你要操作的数据库，右键-&gt;New Query即可在出现的文本中编写SQL语句对数据库数据进行操作，可以直接按F5运行整个文件，<strong>也可以选中想要执行的SQL语句后按F5或右键-&gt;Run Query调试（推荐）</strong>，如果想要切换数据库，<strong>双击侧边栏想要切换的数据库就可以完成数据库的快速切换</strong>，再去执行SQL就会在切换后的数据库上执行了。</li>
+</ol>
+<img src="/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/image-20211102093141244.png" class="" title="image-20211102093141244">
 
 
     </div>
-  </div>
-  
-  
-  
 
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/PostgreSQL/" rel="tag"><i class="fa fa-tag"></i> PostgreSQL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/11/06/VSCode%E8%B0%83%E8%AF%95PostgreSQL%E6%BA%90%E7%A0%81/" rel="prev" title="VSCode调试PostgreSQL源码">
+      <i class="fa fa-chevron-left"></i> VSCode调试PostgreSQL源码
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
 
@@ -266,6 +328,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BDPostgreSQL%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-text">加载PostgreSQL数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8VSCode-PostgreSQL%E6%8F%92%E4%BB%B6"><span class="nav-text">使用VSCode PostgreSQL插件</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
