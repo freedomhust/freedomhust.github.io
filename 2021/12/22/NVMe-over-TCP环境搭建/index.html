@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"freedomhust.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="总结本文讲述了如何在两个femu间搭建NVMe over TCP环境">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NVMe over TCP环境搭建和卸载">
+<meta property="og:url" content="https://freedomhust.github.io/2021/12/22/NVMe-over-TCP%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="熹微橙光">
+<meta property="og:description" content="总结本文讲述了如何在两个femu间搭建NVMe over TCP环境">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-12-22T02:29:20.000Z">
+<meta property="article:modified_time" content="2021-12-22T03:31:36.021Z">
+<meta property="article:author" content="freedomhust">
+<meta property="article:tag" content="NVMe over TCP">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://freedomhust.github.io/2021/12/22/NVMe-over-TCP%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>NVMe over TCP环境搭建和卸载 | 熹微橙光</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">熹微橙光</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">休闲加菲猫</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+  <a href="https://github.com/freedomhust" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://freedomhust.github.io/2021/12/22/NVMe-over-TCP%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/freedomhust.jpg">
+      <meta itemprop="name" content="freedomhust">
+      <meta itemprop="description" content="个人技术总结">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="熹微橙光">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NVMe over TCP环境搭建和卸载
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-12-22 10:29:20 / 修改时间：11:31:36" itemprop="dateCreated datePublished" datetime="2021-12-22T10:29:20+08:00">2021-12-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/NVMe-over-TCP/" itemprop="url" rel="index"><span itemprop="name">NVMe over TCP</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文讲述了如何在两个femu间搭建NVMe over TCP环境</p>
+<span id="more"></span>
+
+
+
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p>这里不过多解释何为NVMe over TCP，简单来说就是使用TCP协议下发NVMe命令给远端的NVMe设备。</p>
+<p>NVMe over TCP环境搭建时，发送NVMe命令的叫做host端，接收NVMe命令的叫target端</p>
+<p>femu启动时，默认用的是主机端的IP地址，为了两个femu之间能够通信，需要两个femu都有独立的IP，可以通过在主机端搭建虚拟网桥和虚拟网卡使两个femu拥有独立IP</p>
+<h2 id="1-检查内核配置"><a href="#1-检查内核配置" class="headerlink" title="1. 检查内核配置"></a>1. 检查内核配置</h2><p>在开始之前需要确定NVME_TCP、NVME_TARGET等内核配置是被set的</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$ cat /boot/config-`uname -r` | grep NVME</span><br><span class="line"></span><br><span class="line"># NVME Support</span><br><span class="line">CONFIG_NVME_CORE=m</span><br><span class="line">CONFIG_BLK_DEV_NVME=m</span><br><span class="line"># CONFIG_NVME_MULTIPATH is <span class="keyword">not</span> <span class="built_in">set</span></span><br><span class="line"># CONFIG_NVME_HWMON is <span class="keyword">not</span> <span class="built_in">set</span></span><br><span class="line">CONFIG_NVME_FABRICS=m</span><br><span class="line">CONFIG_NVME_FC=m</span><br><span class="line">CONFIG_NVME_TCP=m</span><br><span class="line">CONFIG_NVME_TARGET=m</span><br><span class="line">CONFIG_NVME_TARGET_LOOP=m</span><br><span class="line">CONFIG_NVME_TARGET_FC=m</span><br><span class="line"># CONFIG_NVME_TARGET_FCLOOP is <span class="keyword">not</span> <span class="built_in">set</span></span><br><span class="line">CONFIG_NVME_TARGET_TCP=m</span><br><span class="line"><span class="meta"># end of NVME Support</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-host端和target端安装nvme-cli"><a href="#2-host端和target端安装nvme-cli" class="headerlink" title="2. host端和target端安装nvme-cli"></a>2. host端和target端安装nvme-cli</h2><p>在host端和target端都安装上nvme-cli</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install nvme-cli</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3-target端配置"><a href="#3-target端配置" class="headerlink" title="3. target端配置"></a>3. target端配置</h2><ol>
+<li>首先在target端安装nvmet以及nvmet-tcp模块</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo modprobe nvmet</span><br><span class="line">sudo modprobe nvmet-tcp</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>然后使用如下命令去创建一个NVMe Target subsystem和namespace</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd /sys/kernel/config/nvmet/subsystems</span><br><span class="line">sudo mkdir nvme-test-target</span><br><span class="line">cd nvme-test-target/</span><br><span class="line">echo <span class="number">1</span> | sudo tee -a attr_allow_any_host &gt; /dev/null</span><br><span class="line">sudo mkdir namespaces/<span class="number">1</span></span><br><span class="line">cd namespaces/<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>找到target端的nvme设备名称，这里是/dev/nvme0n1</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">femu@fvm:~$ sudo nvme <span class="built_in">list</span></span><br><span class="line">Node             SN                   Model                                    Namespace Usage                      Format           FW Rev</span><br><span class="line">---------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------</span><br><span class="line">/dev/nvme0n1     vSSD0                FEMU BlackBox-SSD Controller             <span class="number">1</span>           <span class="number">4.29</span>  GB /   <span class="number">4.29</span>  GB    <span class="number">512</span>   B +  <span class="number">0</span> B   <span class="number">1.0</span></span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>将nvme设备/dev/nvme0n1与刚刚创建的子系统进行关联</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">echo -n /dev/nvme0n1 |sudo tee -a device_path &gt; /dev/null</span><br><span class="line">echo <span class="number">1</span>|sudo tee -a enable &gt; /dev/null</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>创建端口号，配置IP和其他参数</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /sys/kernel/config/nvmet/ports/1</span><br><span class="line">cd /sys/kernel/config/nvmet/ports/1</span><br><span class="line"></span><br><span class="line">echo 192.168.123.4 |sudo tee -a addr_traddr &gt; /dev/null</span><br><span class="line"></span><br><span class="line">echo tcp|sudo tee -a addr_trtype &gt; /dev/null</span><br><span class="line">echo 4420|sudo tee -a addr_trsvcid &gt; /dev/null</span><br><span class="line">echo ipv4|sudo tee -a addr_adrfam &gt; /dev/null</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>最后将端口与子系统绑定</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ln -s /sys/kernel/config/nvmet/subsystems/nvme-test-target/ /sys/kernel/config/nvmet/ports/1/subsystems/nvme-test-target</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>应该可以看到nvme_tcp服务被启动</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">femu@fvm:/sys/kernel/config/nvmet/ports/1$ dmesg |grep &quot;nvmet_tcp&quot;</span><br><span class="line">[ 1487.076439] nvmet_tcp: enabling port 1 (192.168.123.3:4420)</span><br></pre></td></tr></table></figure>
+
+<p>target端配置到此结束</p>
+<h2 id="4-host端配置"><a href="#4-host端配置" class="headerlink" title="4. host端配置"></a>4. host端配置</h2><ol>
+<li>安装nvme、nvme-tcp模块</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo modprobe nvme</span><br><span class="line">sudo modprobe nvme-tcp</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在主机端使用nvme discover命令查看是否能搜索到盘</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">kjay@kjay:~$ sudo nvme discover -t tcp -a 192.168.123.3 -s 4420</span><br><span class="line">[sudo] password for kjay:</span><br><span class="line"></span><br><span class="line">Discovery Log Number of Records 1, Generation counter 2</span><br><span class="line">=====Discovery Log Entry 0======</span><br><span class="line">trtype:  tcp</span><br><span class="line">adrfam:  ipv4</span><br><span class="line">subtype: nvme subsystem</span><br><span class="line">treq:    not specified, sq flow control disable supported</span><br><span class="line">portid:  1</span><br><span class="line">trsvcid: 4420</span><br><span class="line">subnqn:  nvme-test-target</span><br><span class="line">traddr:  192.168.123.3</span><br><span class="line">sectype: none</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>连接该nvme盘</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nvme connect -t tcp -n nvme-test-target -a 192.168.123.3 -s 4420 --hostnqn=nqn.2014-08.org.nvmexpress:uuid:1b4e28ba-2fa1-11d2-883f-0016d3ccabcd</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>可以看到盘被识别为/dev/nvme1n1</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kjay@kjay:~$ sudo nvme list</span><br><span class="line">Node             SN                   Model                                    Namespace Usage                      Format           FW Rev</span><br><span class="line">---------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------</span><br><span class="line">/dev/nvme0n1     BTPY72440ASR128A     INTEL SSDPEKKR128G7                      1         128.04  GB / 128.04  GB    512   B +  0 B    PSF109E</span><br><span class="line">/dev/nvme1n1     713dcb7e1fef4c5d     Linux                                    1           4.29  GB /   4.29  GB    512   B +  0 B   5.4.0-77</span><br></pre></td></tr></table></figure>
+
+<p>此时可以使用nvme-cli对/dev/nvme1n1下发nvme命令</p>
+<h2 id="5-如何取消host端与target端的连接"><a href="#5-如何取消host端与target端的连接" class="headerlink" title="5. 如何取消host端与target端的连接"></a>5. 如何取消host端与target端的连接</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nvme disconnect /dev/nvme1n1 -n nvme-test-target</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="6-target端如何卸载nvmet模块"><a href="#6-target端如何卸载nvmet模块" class="headerlink" title="6. target端如何卸载nvmet模块"></a>6. target端如何卸载nvmet模块</h2><p>这个问题困扰了我蛮久，最后还是和学长一起解决了，具体细节这里不展开，使用以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo rm -rf /sys/kernel/config/nvmet/ports/1/subsystems/nvme-test-target</span><br><span class="line">echo 0 &gt; /sys/kernel/config/nvmet/subsystems/nvme-test-target/namespaces/1/enable</span><br><span class="line">echo -n 0 &gt; /sys/kernel/config/nvmet/subsystems/nvme-test-target/namespaces/1/device_path</span><br><span class="line">sudo rmdir --ignore-fail-on-non-empty /sys/kernel/config/nvmet/subsystems/nvme-test-target/namespaces/1</span><br><span class="line">sudo rmdir --ignore-fail-on-non-empty /sys/kernel/config/nvmet/subsystems/nvme-test-target</span><br><span class="line">sudo rmdir --ignore-fail-on-non-empty /sys/kernel/config/nvmet/ports/1</span><br><span class="line">sudo rmmod nvmet-tcp</span><br><span class="line">sudo rmmod nvmet</span><br></pre></td></tr></table></figure>
+
+<p>使用<strong>rmdir</strong>而不是<strong>rm -rf</strong>来删除之前创建的目录</p>
+<h2 id="7-参考文献"><a href="#7-参考文献" class="headerlink" title="7. 参考文献"></a>7. 参考文献</h2><p><a target="_blank" rel="noopener" href="https://futurewei-cloud.github.io/ARM-Datacenter/qemu/nvme-of-tcp-vms/#target-guest-setup">How to setup NVMe/TCP with NVME-oF using KVM and QEMU</a></p>
+<p><a target="_blank" rel="noopener" href="https://open.tech2real.com/info_detail_page?id=18441#index">NVMe-oF不只是RDMA，还有TCP</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/NVMe-over-TCP/" rel="tag"><i class="fa fa-tag"></i> NVMe over TCP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/11/06/%E4%BD%BF%E7%94%A8VSCode%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AD%A6%E4%B9%A0PostgreSQL/" rel="prev" title="使用VSCode从零开始学习PostgreSQL">
+      <i class="fa fa-chevron-left"></i> 使用VSCode从零开始学习PostgreSQL
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="nav-text">前置知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%A3%80%E6%9F%A5%E5%86%85%E6%A0%B8%E9%85%8D%E7%BD%AE"><span class="nav-text">1. 检查内核配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-host%E7%AB%AF%E5%92%8Ctarget%E7%AB%AF%E5%AE%89%E8%A3%85nvme-cli"><span class="nav-text">2. host端和target端安装nvme-cli</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-target%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="nav-text">3. target端配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-host%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="nav-text">4. host端配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%A6%82%E4%BD%95%E5%8F%96%E6%B6%88host%E7%AB%AF%E4%B8%8Etarget%E7%AB%AF%E7%9A%84%E8%BF%9E%E6%8E%A5"><span class="nav-text">5. 如何取消host端与target端的连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-target%E7%AB%AF%E5%A6%82%E4%BD%95%E5%8D%B8%E8%BD%BDnvmet%E6%A8%A1%E5%9D%97"><span class="nav-text">6. target端如何卸载nvmet模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-text">7. 参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="freedomhust"
+      src="/images/freedomhust.jpg">
+  <p class="site-author-name" itemprop="name">freedomhust</p>
+  <div class="site-description" itemprop="description">个人技术总结</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/freedomhust" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;freedomhust" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">freedomhust</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <!--页面点击小桃心-->
+  
+     <canvas class="firework" style="position:fixed;left:0;top:0;z-index:99999999;pointer-events:none;"></canvas>
+    <script type="text/javascript" src="/js/firework.js"></script>
+  
+  
+</body>
+</html>
+
+
